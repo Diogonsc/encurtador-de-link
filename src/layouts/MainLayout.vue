@@ -13,6 +13,7 @@
         label-color="amber-6"
         label="Digite a Url que deseja encurtar."
         style="width: 500px"
+        @keyup.enter="encurtarUrl()"
       />
       <Button
         no-caps
@@ -22,15 +23,6 @@
         text-color="#161a1d"
         size="lg"
         @click.prevent="encurtarUrl()"
-      />
-      <Button
-        no-caps
-        rounded
-        color="amber-6"
-        label="Copiar"
-        text-color="#161a1d"
-        size="lg"
-        @click.prevent="copiarUrl()"
       />
     </div>
   </div>
@@ -42,20 +34,22 @@
       row-key="name"
       hide-pagination
     >
-      {{ nameUrl }}
       <template v-slot:body-cell-option="props">
         <q-td :props="props">
           <div class="q-pa-sm q-gutter-sm">
             <q-btn
               size="sm"
-              color="yellow-9"
-              @click="excluirUrl()"
-              icon="create"
+              color="amber-6"
+              @click="copiarUrl()"
+              title="Copiar"
+              text-color="white"
+              icon="fas fa-pencil-alt"
             />
             <q-btn
               size="sm"
-              color="red"
-              @click="editarUrl()"
+              color="negative"
+              @click="excluirUrl()"
+              title="Excluir"
               text-color="white"
               icon="delete_forever"
             />
@@ -80,6 +74,7 @@
 import { useQuasar } from "quasar";
 // import { ref, computed } from 'vue';
 import Button from "../components/Button.vue";
+import axios from "../boot/axios";
 
 export default {
   components: { Button },
@@ -91,21 +86,7 @@ export default {
         this.adcionar();
       }
 
-      const headers = {
-        "Content-Type": "application/json",
-        apiKey: "24ae553329394b3fbc182c08bd824cfb",
-      };
-
-      const linkRequest = {
-        destination: url,
-        domain: { fullName: "rebrand.ly" },
-      };
-
-      fetch("https://api.rebrandly.com/v1/links", {
-        methods: "POST",
-        headers: headers,
-        body: JSON.stringify(linkRequest),
-      }).then((response) => response.json());
+      this.nameUrl = "";
     },
     adcionar() {
       this.rows.push({ name: this.nameUrl });
@@ -115,12 +96,37 @@ export default {
     copiarUrl() {
       this.msgCopiada(); // notificação
     },
+    excluirUrl(i) {
+      this.rows.splice(i, 1);
+      this.msgExcluida();
+    },
+
+    fetchUrl(e) {
+      if (e.key == "Enter") {
+        fetch(`${this.url_base}, ${this.query}, ${this.api_key}`)
+          .then((res) => {
+            return res.json();
+          })
+          .then(this.setResults);
+      }
+    },
+    setResults(results) {
+      this.linkRequest = results;
+    },
   },
   data() {
     return {
+      // Api
+      apikey: "24ae553329394b3fbc182c08bd824cfb",
+      url_base: "https://api.rebrandly.com/v1/links",
+      query: "",
+      linkRequest: {},
+
+      //
       title: "Encurtador de URL",
       nameUrl: "",
       columns: [
+        { name: "id", align: "center", label: "ID", sortable: false },
         {
           label: "Nome da Url",
           align: "left",
@@ -149,10 +155,10 @@ export default {
       // pagesNumber: computed(() => Math.ceil(rows.length / pagination.value.rowsPerPage)),
       msgAdcionada() {
         $q.notify({
-          icon: "check",
-          type: "warning",
+          icon: "fas fa-badge-check",
+          color: "amber-6",
           position: "top-right",
-          message: "Link encurtado com sucesso.",
+          message: "Url encurtada com sucesso.",
         });
       },
       msgErro() {
@@ -160,15 +166,23 @@ export default {
           icon: "fas fa-times",
           type: "negative",
           position: "top-right",
-          message: "Por favor insira um link.",
+          message: "Por favor insira uma url.",
         });
       },
       msgCopiada() {
         $q.notify({
           icon: "check",
-          type: "warning",
+          color: "amber-6",
           position: "top-right",
-          message: "Link copiado com sucesso.",
+          message: "Url copiada com sucesso.",
+        });
+      },
+      msgExcluida() {
+        $q.notify({
+          icon: "fas fa-minus-circle",
+          type: "negative",
+          position: "top-right",
+          message: "Url excluida com sucesso.",
         });
       },
     };
