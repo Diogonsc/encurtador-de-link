@@ -48,7 +48,7 @@
             <q-btn
               size="sm"
               color="negative"
-              @click="excluirUrl()"
+              @click="excluirUrl(props.row)"
               title="Excluir"
               text-color="white"
               icon="delete_forever"
@@ -74,59 +74,71 @@
 import { useQuasar } from "quasar";
 // import { ref, computed } from 'vue';
 import Button from "../components/Button.vue";
-import axios from "../boot/axios";
 
 export default {
   components: { Button },
+  mounted() {},
   methods: {
     encurtarUrl() {
       if (this.nameUrl == "" || this.nameUrl == null) {
         this.msgErro();
       } else {
-        this.adcionar();
+        if ((this.linkcurrent = "")) {
+          this.shortenUrl();
+        } else {
+          this.adcionar();
+        }
       }
 
       this.nameUrl = "";
     },
+    shortenUrl() {
+      const apiKey = "05d6a635a4e0c77d96ab81cd7c6b3ccdfde3025e";
+      const url = "https://api-ssl.bitly.com";
+
+      const urlToShorten =
+        url + "/v3/shorten?access_token=" + apiKey + "&longUrl=" + this.nameUrl;
+      fetch(urlToShorten)
+        .then(
+          (response) => {
+            if (response.ok) {
+              return response.json();
+            }
+
+            throw new Error("Request failed!");
+          },
+          (networkError) => console.log(networkError.message)
+        )
+        .then((jsonResponse) => {
+          this.linkCurto = jsonResponse.data.url;
+          console.log(this.linkCurto);
+        });
+    },
+
     adcionar() {
-      this.rows.push({ name: this.nameUrl });
+      //html elements
+      this.shortenUrl();
+      //AJAX functions
+
+      this.rows.push({ name: this.linkCurto });
       this.msgAdcionada(); // notificação
-      return this.rows.nameUrl;
     },
     copiarUrl() {
       this.msgCopiada(); // notificação
     },
-    excluirUrl(i) {
-      this.rows.splice(i, 1);
-      this.msgExcluida();
-    },
-
-    fetchUrl(e) {
-      if (e.key == "Enter") {
-        fetch(`${this.url_base}, ${this.query}, ${this.api_key}`)
-          .then((res) => {
-            return res.json();
-          })
-          .then(this.setResults);
-      }
-    },
-    setResults(results) {
-      this.linkRequest = results;
+    excluirUrl(row) {
+      console.log("Index", row.name);
+      this.rows.splice(row, 1);
+      this.msgExcluida(row);
     },
   },
   data() {
     return {
-      // Api
-      apikey: "24ae553329394b3fbc182c08bd824cfb",
-      url_base: "https://api.rebrandly.com/v1/links",
-      query: "",
-      linkRequest: {},
-
-      //
       title: "Encurtador de URL",
       nameUrl: "",
+      linkCurto: "",
       columns: [
-        { name: "id", align: "center", label: "ID", sortable: false },
+        { name: "id", align: "center", sortable: false },
         {
           label: "Nome da Url",
           align: "left",
