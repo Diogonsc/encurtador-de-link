@@ -26,7 +26,16 @@
       />
     </div>
   </div>
-  <div class="q-pa-md tabela">
+  <div class="link">
+    <ul>
+      <li>
+        <a class="a-linkcurto" :href="this.linkCurto" target="blank">{{
+          this.linkCurto
+        }}</a>
+      </li>
+    </ul>
+  </div>
+  <!-- <div class="q-pa-md tabela">
     <q-table
       title="Urls encurtadas."
       :rows="rows"
@@ -58,7 +67,7 @@
       </template>
     </q-table>
 
-    <!-- <div class="row justify-center q-mt-md">
+    <div class="row justify-center q-mt-md">
       <q-pagination
         v-model="pagination.page"
         active-color="amber-6"
@@ -66,8 +75,8 @@
         :max="pagesNumber"
         size="md"
       />
-    </div> -->
-  </div>
+    </div>
+  </div> -->
 </template>
 
 <script>
@@ -137,18 +146,18 @@ export default {
       title: "Encurtador de URL",
       nameUrl: "",
       linkCurto: "",
-      columns: [
-        { name: "id", align: "center", sortable: false },
-        {
-          label: "Nome da Url",
-          align: "left",
-          field: (row) => row.name,
-          format: (val) => `${val}`,
-        },
-        { name: "option", align: "center", label: "Opções", sortable: false },
-      ],
+      // columns: [
+      //   { name: "id", align: "center", sortable: false },
+      //   {
+      //     label: "Nome da Url",
+      //     align: "left",
+      //     field: (row) => row.name,
+      //     format: (val) => `${val}`,
+      //   },
+      //   { name: "option", align: "center", label: "Opções", sortable: false },
+      // ],
 
-      rows: [],
+      // rows: [],
     };
   },
   setup() {
@@ -203,6 +212,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.link {
+  display: flex;
+  justify-content: center;
+  padding-top: 50px;
+
+  li {
+    list-style: none;
+  }
+
+  .a-linkcurto {
+    color: #fff;
+    text-decoration: none;
+  }
+}
 .box {
   width: 100vw;
   .box-input {
