@@ -1,5 +1,5 @@
 <template>
-  <div class="box">
+  <div class="box container">
     <h2 class="title text-center text-white">{{ title }}</h2>
     <div class="box-input">
       <q-input
@@ -16,6 +16,7 @@
         @keyup.enter="encurtarUrl()"
       />
       <Button
+        class="btn-link"
         no-caps
         rounded
         color="amber-6"
@@ -212,6 +213,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.container {
+  padding-left: 15px;
+  padding-right: 15px;
+}
 .link {
   display: flex;
   justify-content: center;
@@ -240,9 +245,12 @@ export default {
   width: 80%;
 }
 
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 500px) {
   .tabela {
     margin: auto;
+    width: 100%;
+  }
+  .btn-link {
     width: 100%;
   }
 }
