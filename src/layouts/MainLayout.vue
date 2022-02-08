@@ -31,58 +31,15 @@
     <ul>
       <li>
         <a class="a-linkcurto" :href="this.linkCurto" target="blank">{{
-          this.linkCurto
+          `Link encurtado: ${this.linkCurto}`
         }}</a>
       </li>
     </ul>
   </div>
-  <!-- <div class="q-pa-md tabela">
-    <q-table
-      title="Urls encurtadas."
-      :rows="rows"
-      :columns="columns"
-      row-key="name"
-      hide-pagination
-    >
-      <template v-slot:body-cell-option="props">
-        <q-td :props="props">
-          <div class="q-pa-sm q-gutter-sm">
-            <q-btn
-              size="sm"
-              color="amber-6"
-              @click="copiarUrl()"
-              title="Copiar"
-              text-color="white"
-              icon="fas fa-pencil-alt"
-            />
-            <q-btn
-              size="sm"
-              color="negative"
-              @click="excluirUrl(props.row)"
-              title="Excluir"
-              text-color="white"
-              icon="delete_forever"
-            />
-          </div>
-        </q-td>
-      </template>
-    </q-table>
-
-    <div class="row justify-center q-mt-md">
-      <q-pagination
-        v-model="pagination.page"
-        active-color="amber-6"
-        color="white"
-        :max="pagesNumber"
-        size="md"
-      />
-    </div>
-  </div> -->
 </template>
 
 <script>
 import { useQuasar } from "quasar";
-// import { ref, computed } from 'vue';
 import Button from "../components/Button.vue";
 
 export default {
@@ -126,9 +83,8 @@ export default {
     },
 
     adcionar() {
-      //html elements
-      this.shortenUrl();
-      //AJAX functions
+      this.shortenUrl(this.msgAdcionada());
+      this.nameUrl = "";
 
       this.rows.push({ name: this.linkCurto });
       this.msgAdcionada(); // notificação
@@ -147,38 +103,16 @@ export default {
       title: "Encurtador de URL",
       nameUrl: "",
       linkCurto: "",
-      // columns: [
-      //   { name: "id", align: "center", sortable: false },
-      //   {
-      //     label: "Nome da Url",
-      //     align: "left",
-      //     field: (row) => row.name,
-      //     format: (val) => `${val}`,
-      //   },
-      //   { name: "option", align: "center", label: "Opções", sortable: false },
-      // ],
-
-      // rows: [],
     };
   },
   setup() {
     const $q = useQuasar();
-    // const pagination = ref({
-    //   sortBy: 'desc',
-    //   descending: false,
-    //   page: 1,
-    //   rowsPerPage: 10,
-    // });
-    return {
-      // pagination,
-      // columns,
-      // rows,
 
-      // pagesNumber: computed(() => Math.ceil(rows.length / pagination.value.rowsPerPage)),
+    return {
       msgAdcionada() {
         $q.notify({
           icon: "fas fa-badge-check",
-          color: "amber-6",
+          color: "positive",
           position: "top-right",
           message: "Url encurtada com sucesso.",
         });
@@ -246,10 +180,6 @@ export default {
 }
 
 @media screen and (max-width: 500px) {
-  .tabela {
-    margin: auto;
-    width: 100%;
-  }
   .btn-link {
     width: 100%;
   }
